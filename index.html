@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Bill Split Calculator</title>
+</head>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Bill Split Calculator</h1>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <h2>Step 1 - Set Tax Rate:</h2>
+                <form id="taxForm" class="mb-4">
+                    <div class="form-group">
+                        <label for="taxRateInput">Tax Rate (e.g. 0.05 for 5%):</label>
+                        <input type="number" id="taxRateInput" step="0.01" class="form-control" required>
+                    </div>
+                    <button type="button" id="setTaxButton" class="btn btn-primary">Set Tax Rate</button>
+                </form>
+            </div>
+
+            <div class="col-lg-4">
+                <h2>Step 2 - Add People:</h2>
+                <form id="billForm" class="mb-4">
+                    <div class="form-group">
+                        <label for="name">Person Name:</label>
+                        <input type="text" id="name" class="form-control" required>
+                    </div>
+                    <button type="button" id="addButton" class="btn btn-primary">Add Person</button>
+                </form>
+            </div>
+
+            <div class="col-lg-4">
+                <h2>Step 3 - Add Items:</h2>
+                <form id="itemForm" class="mb-4">
+                    <div class="form-group">
+                        <label for="itemName">Item Name:</label>
+                        <input type="text" id="itemName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemPrice">Item Price:</label>
+                        <input type="number" id="itemPrice" step="0.01" class="form-control" required>
+                    </div>
+                    <label>Select Person/People:</label>
+                    <div id="peopleCheckboxes"></div>
+                    <button type="button" id="addItemButton" class="btn btn-primary">Add Item</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div id="billDetails" class="bg-white p-4 mt-4 rounded shadow"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
