@@ -11,7 +11,7 @@
 
 ## Screenshot
 
-![Billr Demo Image](screenshot.png) <!-- You can add a screenshot of your app here -->
+![Billr Demo Image](screenshot.png)
 
 ## Link to Billr
 
