@@ -18,8 +18,8 @@ setTaxButton.addEventListener('click', () => {
     const selectedTaxRate = parseFloat(taxRateInput.value);
     if (!isNaN(selectedTaxRate)) {
         taxRate = selectedTaxRate;
-        taxRateInput.disabled = true;
-        setTaxButton.disabled = true;
+        //taxRateInput.disabled = true;
+        //setTaxButton.disabled = true;
         updatePeopleCheckboxes();
         updateBillDetails();
     }
