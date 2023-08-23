@@ -27,6 +27,8 @@ Billr can be accessed at https://billr.vercel.app
 
 4. Review Bill Split: The app will display a detailed breakdown of costs, including individual and shared expenses.
 
+5. Copy Bill Split: Use the copy button to copy the entire bill split and easily share it anywhere.
+
 ## Contributing
 
 Contributions are welcome! Fork the repository, create a new branch, and submit a pull request.
