@@ -1,4 +1,4 @@
-# <img src="https://github.com/mmaarij/Billr-Bill-Split-Website/blob/main/favicon.png" width="40"> Billr: Fair Bill Splitting Calculator
+# <img src="https://github.com/mmaarij/Billr-Bill-Split-Website/blob/main/favicon.png" width="35"> Billr: Fair Bill Splitting Calculator
 
 **Billr** is a web-based bill splitting calculator that helps you easily calculate the amount each person owes when splitting a restaurant bill. Whether you're with friends, family, or colleagues, Billr ensures a fair distribution of expenses.
 
