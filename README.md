@@ -11,7 +11,7 @@
 
 ## Screenshot
 
-![SplitEase Demo](demo.png) <!-- You can add a screenshot of your app here -->
+![Billr Demo Image](screenshot.png) <!-- You can add a screenshot of your app here -->
 
 ## Link to Billr
 
