@@ -9,6 +9,8 @@ const taxRateInput = document.getElementById('taxRateInput');
 const setTaxButton = document.getElementById('setTaxButton');
 
 let taxRate = 0.05; // Default 5% tax rate
+let grandTotal;
+let taxAmount;
 
 let everyone = {};
 let sharedItems = {};
@@ -99,8 +101,8 @@ function updatePeopleCheckboxes() {
 }
 
 function updateBillDetails() {
-    const grandTotal = totalWithoutTax * (1 + taxRate);
-    const taxAmount = grandTotal - totalWithoutTax;
+    grandTotal = totalWithoutTax * (1 + taxRate);
+    taxAmount = grandTotal - totalWithoutTax;
 
     let output = `<h2>Bill Split:</h2>`;
     for (const person in everyone) {
@@ -124,8 +126,50 @@ function updateBillDetails() {
     output += `<p>Total tax: PKR ${taxAmount.toFixed(2)}</p>`;
     output += `<p><strong>Grand Total: PKR ${grandTotal.toFixed(2)}</strong></p>`;
 
+    // Add Copy button
+    output += `<button id="copyButton" class="btn btn-primary">Copy Bill Split</button>`;
+
     billDetails.innerHTML = output;
+
+    // Attach click event to the Copy button
+    const copyButton = document.getElementById('copyButton');
+    copyButton.addEventListener('click', copyBillSplit);
 }
+
+function copyBillSplit() {
+    let textToCopy = '';
+
+    for (const person in everyone) {
+        const taxContribution = (everyone[person] / totalWithoutTax) * taxAmount;
+        const totalAmount = everyone[person] + taxContribution;
+
+        textToCopy += `${person} owes PKR ${totalAmount.toFixed(2)} (including tax)\n`;
+
+        if (sharedItems[person]) {
+            textToCopy += `Items:\n`;
+            sharedItems[person].forEach(item => {
+                const itemTotalWithTax = item.itemShare * (1 + taxRate);
+                textToCopy += `- ${item.itemName}: PKR ${itemTotalWithTax.toFixed(2)}\n`;
+            });
+        }
+
+        textToCopy += '\n';
+    }
+
+    textToCopy += `Total before tax: PKR ${totalWithoutTax.toFixed(2)}\n`;
+    textToCopy += `Total tax: PKR ${taxAmount.toFixed(2)}\n`;
+    textToCopy += `Grand Total: PKR ${grandTotal.toFixed(2)}`;
+
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = textToCopy;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempTextArea);
+
+    alert('Bill split copied to clipboard!');
+}
+
 
 // Initial population of people checkboxes
 updatePeopleCheckboxes();
