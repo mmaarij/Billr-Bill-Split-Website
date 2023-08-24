@@ -94,10 +94,28 @@ function updatePeopleCheckboxes() {
         label.textContent = person;
         label.setAttribute('for', `checkbox_${person}`);
 
-        peopleCheckboxes.appendChild(checkbox);
-        peopleCheckboxes.appendChild(label);
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-danger btn-sm ml-2';
+        deleteButton.innerHTML = '<i class="bi bi-trash-fill"></i>';
+        deleteButton.addEventListener('click', () => removePerson(person));
+
+        const container = document.createElement('div');
+        container.className = 'd-flex align-items-center';
+        container.appendChild(checkbox);
+        container.appendChild(label);
+        container.appendChild(deleteButton);
+
+        peopleCheckboxes.appendChild(container);
         peopleCheckboxes.appendChild(document.createElement('br'));
     }
+}
+
+function removePerson(person) {
+    totalWithoutTax -= everyone[person];
+    delete everyone[person];
+    delete sharedItems[person];
+    updatePeopleCheckboxes();
+    updateBillDetails();
 }
 
 function updateBillDetails() {
@@ -118,6 +136,8 @@ function updateBillDetails() {
                 output += `<p>- ${item.itemName}: PKR ${itemTotalWithTax.toFixed(2)}</p>`;
             });
         }
+
+        output += `Amount before tax was PKR ${everyone[person].toFixed(2)}`;
 
         output += '<hr>';
     }
@@ -153,7 +173,7 @@ function copyBillSplit() {
             });
         }
 
-        textToCopy += '\n';
+        textToCopy += `Amount before tax was PKR ${everyone[person].toFixed(2)} \n\n`;
     }
 
     textToCopy += `Total before tax: PKR ${totalWithoutTax.toFixed(2)}\n`;
