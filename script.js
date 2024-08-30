@@ -7,10 +7,17 @@ const peopleCheckboxes = document.getElementById('peopleCheckboxes');
 const taxForm = document.getElementById('taxForm');
 const taxRateInput = document.getElementById('taxRateInput');
 const setTaxButton = document.getElementById('setTaxButton');
+const discountForm = document.getElementById('discountForm');
+const discountRateInput = document.getElementById('discountRateInput');
+const maxDiscountCapInput = document.getElementById('maxDiscountCapInput');
+const applyDiscountButton = document.getElementById('applyDiscountButton');
 
 let taxRate = 0.05; // Default 5% tax rate
 let grandTotal;
 let taxAmount;
+let discountRate = 0;
+let maxDiscountCap = 0;
+let totalDiscount = 0;
 
 let everyone = {};
 let sharedItems = {};
@@ -20,20 +27,25 @@ setTaxButton.addEventListener('click', () => {
     const selectedTaxRate = parseFloat(taxRateInput.value);
     if (!isNaN(selectedTaxRate)) {
         taxRate = selectedTaxRate;
-        //taxRateInput.disabled = true;
-        //setTaxButton.disabled = true;
         updatePeopleCheckboxes();
+        updateBillDetails();
+    }
+});
+
+applyDiscountButton.addEventListener('click', () => {
+    const selectedDiscountRate = parseFloat(discountRateInput.value);
+    const selectedMaxDiscountCap = parseFloat(maxDiscountCapInput.value);
+    if (!isNaN(selectedDiscountRate) && !isNaN(selectedMaxDiscountCap)) {
+        discountRate = selectedDiscountRate;
+        maxDiscountCap = selectedMaxDiscountCap;
         updateBillDetails();
     }
 });
 
 addButton.addEventListener('click', () => {
     const nameInput = document.getElementById('name');
-    // const amountInput = document.getElementById('amount');
     const amountInput = "0";
-
     const name = nameInput.value;
-    // const amount = parseFloat(amountInput.value);
     const amount = parseFloat(amountInput);
 
     if (name && !isNaN(amount)) {
@@ -122,12 +134,19 @@ function updateBillDetails() {
     grandTotal = totalWithoutTax * (1 + taxRate);
     taxAmount = grandTotal - totalWithoutTax;
 
+    // Calculate total discount
+    totalDiscount = totalWithoutTax * discountRate;
+    if (totalDiscount > maxDiscountCap) {
+        totalDiscount = maxDiscountCap;
+    }
+
     let output = `<h2>Bill Split:</h2>`;
     for (const person in everyone) {
-        const taxContribution = (everyone[person] / totalWithoutTax) * taxAmount;
-        const totalAmount = everyone[person] + taxContribution;
+        const personTaxContribution = (everyone[person] / totalWithoutTax) * taxAmount;
+        const personDiscount = (everyone[person] / totalWithoutTax) * totalDiscount;
+        const totalAmount = everyone[person] + personTaxContribution - personDiscount;
 
-        output += `<p>${person} owes PKR ${totalAmount.toFixed(2)} (including tax)</p>`;
+        output += `<p>${person} owes PKR ${totalAmount.toFixed(2)} (including tax and discount)</p>`;
 
         if (sharedItems[person]) {
             output += `<p>Items:</p>`;
@@ -137,14 +156,14 @@ function updateBillDetails() {
             });
         }
 
-        output += `Amount before tax was PKR ${everyone[person].toFixed(2)}`;
-
+        output += `Amount before tax and discount was PKR ${everyone[person].toFixed(2)}`;
         output += '<hr>';
     }
 
-    output += `<p>Total before tax: PKR ${totalWithoutTax.toFixed(2)}</p>`;
+    output += `<p>Total before tax and discount: PKR ${totalWithoutTax.toFixed(2)}</p>`;
+    output += `<p>Total discount: PKR ${totalDiscount.toFixed(2)}</p>`;
     output += `<p>Total tax: PKR ${taxAmount.toFixed(2)}</p>`;
-    output += `<p><strong>Grand Total: PKR ${grandTotal.toFixed(2)}</strong></p>`;
+    output += `<p><strong>Grand Total: PKR ${(grandTotal - totalDiscount).toFixed(2)}</strong></p>`;
 
     // Add Copy button
     output += `<button id="copyButton" class="btn btn-primary">Copy Bill Split</button>`;
@@ -160,10 +179,11 @@ function copyBillSplit() {
     let textToCopy = '';
 
     for (const person in everyone) {
-        const taxContribution = (everyone[person] / totalWithoutTax) * taxAmount;
-        const totalAmount = everyone[person] + taxContribution;
+        const personTaxContribution = (everyone[person] / totalWithoutTax) * taxAmount;
+        const personDiscount = (everyone[person] / totalWithoutTax) * totalDiscount;
+        const totalAmount = everyone[person] + personTaxContribution - personDiscount;
 
-        textToCopy += `${person} owes PKR ${totalAmount.toFixed(2)} (including tax)\n`;
+        textToCopy += `${person} owes PKR ${totalAmount.toFixed(2)} (including tax and discount)\n`;
 
         if (sharedItems[person]) {
             textToCopy += `Items:\n`;
@@ -173,12 +193,13 @@ function copyBillSplit() {
             });
         }
 
-        textToCopy += `Amount before tax was PKR ${everyone[person].toFixed(2)} \n\n`;
+        textToCopy += `Amount before tax and discount was PKR ${everyone[person].toFixed(2)}\n\n`;
     }
 
-    textToCopy += `Total before tax: PKR ${totalWithoutTax.toFixed(2)}\n`;
+    textToCopy += `Total before tax and discount: PKR ${totalWithoutTax.toFixed(2)}\n`;
+    textToCopy += `Total discount: PKR ${totalDiscount.toFixed(2)}\n`;
     textToCopy += `Total tax: PKR ${taxAmount.toFixed(2)}\n`;
-    textToCopy += `Grand Total: PKR ${grandTotal.toFixed(2)}`;
+    textToCopy += `Grand Total: PKR ${(grandTotal - totalDiscount).toFixed(2)}`;
 
     const tempTextArea = document.createElement('textarea');
     tempTextArea.value = textToCopy;
@@ -189,7 +210,6 @@ function copyBillSplit() {
 
     alert('Bill split copied to clipboard!');
 }
-
 
 // Initial population of people checkboxes
 updatePeopleCheckboxes();
